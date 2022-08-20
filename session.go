@@ -17,6 +17,7 @@ import (
 //
 // When Command() returns an empty slice, the user requested a shell. Otherwise
 // the user is performing an exec with those command arguments.
+// 当Command() 不为空，说明可能为exec请求
 //
 // TODO: Signals
 type Session interface {
@@ -244,7 +245,7 @@ func (sess *session) handleRequests(reqs <-chan *gossh.Request) {
 
 			var payload = struct{ Value string }{}
 			gossh.Unmarshal(req.Payload, &payload)
-			sess.rawCmd = payload.Value
+			sess.rawCmd = payload.Value //从ssh协议解析出待运行的程序名字
 
 			// If there's a session policy callback, we need to confirm before
 			// accepting the session.
